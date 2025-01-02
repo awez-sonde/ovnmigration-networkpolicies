@@ -49,3 +49,35 @@ status:
   - 172.30.0.0/16
 
 ```
+
+## Create two projects for facilitation network policies
+
+Two project `projecta` and `projectb` 
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc new-project projecta
+Now using project "projecta" on server "https://api.ovnmigration.lab.upshift.rdu2.redhat.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+
+
+
+awezsonde@Awezs-Mac-Studio ~ % oc new-project projectb
+Now using project "projectb" on server "https://api.ovnmigration.lab.upshift.rdu2.redhat.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=registry.k8s.io/e2e-test-images/agnhost:2.43 -- /agnhost serve-hostname
+
+```
