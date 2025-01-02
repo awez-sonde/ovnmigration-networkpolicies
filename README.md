@@ -432,5 +432,14 @@ NAME     CONFIG                                             UPDATED   UPDATING  
 master   rendered-master-111e65b19e5e673d02a596329266a022   False     True       False      3              0                   0                     0                      7d6h
 worker   rendered-worker-ca4c7dc88351e223445c226a15ea52de   False     True       False      2              0                   0                     0                      7d6h
 
+
+awezsonde@Awezs-Mac-Studio ~ % oc get nodes
+NAME                                                STATUS                     ROLES                  AGE    VERSION
+master-0.ovnmigration.lab.upshift.rdu2.redhat.com   Ready,SchedulingDisabled   control-plane,master   7d6h   v1.27.14+7852426
+master-1.ovnmigration.lab.upshift.rdu2.redhat.com   Ready                      control-plane,master   7d6h   v1.27.14+7852426
+master-2.ovnmigration.lab.upshift.rdu2.redhat.com   Ready                      control-plane,master   7d6h   v1.27.14+7852426
+worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   Ready                      worker                 7d6h   v1.27.14+7852426
+worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   Ready                      worker                 7d6h   v1.27.14+7852426
+
 ```
 
