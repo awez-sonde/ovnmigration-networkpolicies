@@ -195,4 +195,35 @@ Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavaila
 ```
 
 
+```
+awezsonde@Awezs-Mac-Studio ~ % oc get pods -n projecta -o wide
+NAME                                  READY   STATUS      RESTARTS   AGE   IP             NODE                                                NOMINATED NODE   READINESS GATES
+postgresql-1-2frjh                    1/1     Running     0          21m   10.131.0.205   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+postgresql-1-deploy                   0/1     Completed   0          21m   10.131.0.204   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-build      0/1     Completed   0          21m   10.128.2.34    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-deploy     0/1     Completed   0          18m   10.128.2.37    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-hook-pre   0/1     Completed   0          18m   10.128.2.38    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-kz2rj      1/1     Running     0          18m   10.128.2.39    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+
+
+
+
+
+awezsonde@Awezs-Mac-Studio ~ % oc get pods -n projectb -o wide
+NAME                                  READY   STATUS      RESTARTS   AGE   IP             NODE                                                NOMINATED NODE   READINESS GATES
+postgresql-1-deploy                   0/1     Completed   0          21m   10.128.2.36    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+postgresql-1-plpjv                    1/1     Running     0          21m   10.131.0.206   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-build      0/1     Completed   0          21m   10.128.2.35    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-deploy     0/1     Completed   0          17m   10.128.2.40    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-hook-pre   0/1     Completed   0          17m   10.128.2.41    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+rails-postgresql-example-1-srdg2      1/1     Running     0          17m   10.128.2.42    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+
+```
+
+
+## Ping pods from `projecta` to `projectb`
+
+
+
+
 
