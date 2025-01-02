@@ -241,3 +241,52 @@ PING 10.128.2.50 (10.128.2.50) 56(84) bytes of data.
 # Start  OVN migration 
 
 
+## Prerequisites
+
+### Backup 
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc get Network.config.openshift.io cluster -o yaml > cluster-openshift-sdn.yaml
+
+
+awezsonde@Awezs-Mac-Studio ~ % cat cluster-openshift-sdn.yaml 
+apiVersion: config.openshift.io/v1
+kind: Network
+metadata:
+  creationTimestamp: "2024-12-26T10:38:05Z"
+  generation: 2
+  name: cluster
+  resourceVersion: "5160"
+  uid: c3628f35-000d-4316-8860-cd007087bdda
+spec:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  externalIP:
+    policy: {}
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+status:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  clusterNetworkMTU: 1450
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - 172.30.0.0/16
+
+```
+### Script to verify if the timeout for SDN is set to `0`
+
+```
+
+```
+
+Delete any NNCP and make sure the `migration` field is set to `none`.
+
+
+
+```
+
+```
