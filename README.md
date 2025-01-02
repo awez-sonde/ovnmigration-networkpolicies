@@ -416,7 +416,7 @@ awezsonde@Awezs-Mac-Studio ~ % oc patch Network.operator.openshift.io cluster --
 network.operator.openshift.io/cluster patched (no change)
 ```
 
-### Start the migration
+### Start the prerequisites for migration
 
 ```
 awezsonde@Awezs-Mac-Studio ~ % oc patch Network.operator.openshift.io cluster --type='merge' --patch '{ "spec": { "migration": { "networkType": "OVNKubernetes" } } }' 
@@ -424,7 +424,7 @@ network.operator.openshift.io/cluster patched
 
 ```
 
-### Verify the migration process
+### Verify the process
 
 ```
 awezsonde@Awezs-Mac-Studio ~ % oc get mcp   
@@ -441,5 +441,130 @@ master-2.ovnmigration.lab.upshift.rdu2.redhat.com   Ready                      c
 worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   Ready                      worker                 7d6h   v1.27.14+7852426
 worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   Ready                      worker                 7d6h   v1.27.14+7852426
 
+
+
+awezsonde@Awezs-Mac-Studio ~ % oc get pod -n openshift-machine-config-operator
+
+NAME                                                                     READY   STATUS    RESTARTS   AGE
+kube-rbac-proxy-crio-master-0.ovnmigration.lab.upshift.rdu2.redhat.com   1/1     Running   4          7d6h
+kube-rbac-proxy-crio-master-1.ovnmigration.lab.upshift.rdu2.redhat.com   1/1     Running   4          7d6h
+kube-rbac-proxy-crio-master-2.ovnmigration.lab.upshift.rdu2.redhat.com   1/1     Running   4          7d6h
+kube-rbac-proxy-crio-worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   1/1     Running   7          7d6h
+kube-rbac-proxy-crio-worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   1/1     Running   7          7d6h
+machine-config-controller-56fc59fdcf-pv49c                               2/2     Running   0          17m
+machine-config-daemon-7h489                                              2/2     Running   2          7d6h
+machine-config-daemon-h98hl                                              2/2     Running   2          7d6h
+machine-config-daemon-l7kx2                                              2/2     Running   2          7d6h
+machine-config-daemon-nvnnv                                              2/2     Running   2          7d6h
+machine-config-daemon-z6kfn                                              2/2     Running   2          7d6h
+machine-config-operator-575bdfffc6-v5hfb                                 2/2     Running   0          13m
+machine-config-server-db272                                              1/1     Running   1          7d6h
+machine-config-server-h5vtq                                              1/1     Running   1          7d6h
+machine-config-server-wz28q                                              1/1     Running   1          7d6h
+
+
 ```
+
+
+## Start the migration
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc patch Network.config.openshift.io cluster --type='merge' --patch '{ "spec": { "networkType": "OVNKubernetes" } }' 
+network.config.openshift.io/cluster patched
+
+
+```
+
+## Verify the multus daemonset has rolled out
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc -n openshift-multus rollout status daemonset/multus
+
+daemon set "multus" successfully rolled out
+```
+
+Wait for all the operators to be available
+
+```
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+authentication                             4.14.31   True        False         False      3s
+baremetal                                  4.14.31   True        False         False	  7d6h
+cloud-controller-manager                   4.14.31   True        False         False	  7d6h
+cloud-credential                           4.14.31   True        False         False	  7d7h
+cluster-autoscaler                         4.14.31   True        False         False	  7d6h
+config-operator                            4.14.31   True        False         False	  7d6h
+console                                    4.14.31   False       False         False	  44s     RouteHealthAvailable: console route is not admitted
+control-plane-machine-set                  4.14.31   True        False         False	  7d6h
+csi-snapshot-controller                    4.14.31   True        False         False	  7d6h
+dns                                        4.14.31   True        True          True	  7d6h    DNS default is degraded
+etcd                                       4.14.31   True        False         False	  7d6h
+image-registry                             4.14.31   False	 True          True	  17m     Available: The deployment does not have available replicas...
+ingress                                    4.14.31   True        False         False	  38m
+insights                                   4.14.31   True        False         False	  7d6h
+kube-apiserver                             4.14.31   True        False         False	  7d6h
+kube-controller-manager                    4.14.31   True        False         False      7d6h
+kube-scheduler                             4.14.31   True        False         False	  7d6h
+kube-storage-version-migrator              4.14.31   True        False         False	  37m
+machine-api                                4.14.31   True        False         False	  7d6h
+machine-approver                           4.14.31   True        False         False	  7d6h
+machine-config                             4.14.31   True        False         False	  7d6h
+marketplace                                4.14.31   True        False         False	  7d6h
+monitoring                                 4.14.31   False       True          True 	  2m27s   reconciling Prometheus Operator Admission Webhook Deployment failed: updat
+ing Deployment object failed: waiting for DeploymentRollout of openshift-monitoring/prometheus-operator-admission-webhook: context deadline exceeded
+network                                    4.14.31   True        True          False	  7d6h    DaemonSet "/openshift-network-diagnostics/network-check-target" is not ava
+ilable (awaiting 2 nodes)
+node-tuning                                4.14.31   True        False         False	  7d6h
+openshift-apiserver                        4.14.31   True 	 False         False	  50s
+openshift-controller-manager               4.14.31   True        False         False	  7d6h
+openshift-samples                          4.14.31   True        False         False	  7d6h
+operator-lifecycle-manager                 4.14.31   True        False         False	  7d6h
+operator-lifecycle-manager-catalog         4.14.31   True        False         False	  7d6h
+operator-lifecycle-manager-packageserver   4.14.31   True        False         False	  7d6h
+service-ca                                 4.14.31   True        False         False	  7d6h
+storage                                    4.14.31   True        False         False	  7d6h
+
+
+```
+
+
+
+
+
+The above operators seems to be in Degraded state for a long time.Starting the reboot script
+
+```
+
+[root@test ~]# cat reboot-post-migration.sh 
+#!/bin/bash
+readarray -t POD_NODES <<< "$(oc get pod -n openshift-machine-config-operator -o wide| grep daemon|awk '{print $1" "$7}')"
+
+for i in "${POD_NODES[@]}"
+do
+  read -r POD NODE <<< "$i"
+  until oc rsh -n openshift-machine-config-operator "$POD" chroot /rootfs shutdown -r +1
+    do
+      echo "cannot reboot node $NODE, retry" && sleep 3
+    done
+done
+
+
+
+
+
+
+[root@test ~]# chmod +x reboot-post-migration.sh 
+[root@test ~]# ./reboot-post-migration.sh 
+Defaulted container "machine-config-daemon" out of: machine-config-daemon, kube-rbac-proxy
+Reboot scheduled for Thu 2025-01-02 17:51:23 UTC, use 'shutdown -c' to cancel.
+Defaulted container "machine-config-daemon" out of: machine-config-daemon, kube-rbac-proxy
+Reboot scheduled for Thu 2025-01-02 17:51:53 UTC, use 'shutdown -c' to cancel.
+Defaulted container "machine-config-daemon" out of: machine-config-daemon, kube-rbac-proxy
+Reboot scheduled for Thu 2025-01-02 17:51:53 UTC, use 'shutdown -c' to cancel.
+Defaulted container "machine-config-daemon" out of: machine-config-daemon, kube-rbac-proxy
+Reboot scheduled for Thu 2025-01-02 17:51:54 UTC, use 'shutdown -c' to cancel.
+Defaulted container "machine-config-daemon" out of: machine-config-daemon, kube-rbac-proxy
+Reboot scheduled for Thu 2025-01-02 17:51:54 UTC, use 'shutdown -c' to cancel.
+```
+
+
 
