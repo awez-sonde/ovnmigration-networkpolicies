@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-projecta-traffic
+  namespace: projectb
+spec:
+  podSelector: {} # Apply to all pods in ProjectB
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: projecta # Only allow traffic from namespaces other than ProjectA
