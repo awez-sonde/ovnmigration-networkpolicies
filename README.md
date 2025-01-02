@@ -566,5 +566,150 @@ Defaulted container "machine-config-daemon" out of: machine-config-daemon, kube-
 Reboot scheduled for Thu 2025-01-02 17:51:54 UTC, use 'shutdown -c' to cancel.
 ```
 
+Its normal to lose the connectivity of the cluster for few minutes
+
+After the reboot script the operators should be fine
+
+```
+NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+authentication                             4.14.31   True        False         False      7m36s
+baremetal                                  4.14.31   True        False         False	  7d7h
+cloud-controller-manager                   4.14.31   True        False         False	  7d7h
+cloud-credential                           4.14.31   True        False         False	  7d7h
+cluster-autoscaler                         4.14.31   True        False         False	  7d7h
+config-operator                            4.14.31   True        False         False	  7d7h
+console                                    4.14.31   True        False         False	  30s
+control-plane-machine-set                  4.14.31   True        False         False	  7d7h
+csi-snapshot-controller                    4.14.31   True        False         False	  7d7h
+dns                                        4.14.31   True        False         False	  3m29s
+etcd                                       4.14.31   True        False         False	  7d7h
+image-registry                             4.14.31   True 	 False         False      57s
+ingress                                    4.14.31   True        False         False	  2m54s
+insights                                   4.14.31   True        False         False	  7d7h
+kube-apiserver                             4.14.31   True        False         False	  7d7h
+kube-controller-manager                    4.14.31   True        False         False	  7d7h
+kube-scheduler                             4.14.31   True        False         False	  7d7h
+kube-storage-version-migrator              4.14.31   True        False         False	  53m
+machine-api                                4.14.31   True        False         False	  7d7h
+machine-approver                           4.14.31   True        False         False	  7d7h
+machine-config                             4.14.31   True        False         False	  7d7h
+marketplace                                4.14.31   True        False         False	  7d7h
+monitoring                                 4.14.31   True        False         False	  2m59s
+network                                    4.14.31   True        False         False	  7d7h
+node-tuning                                4.14.31   True        False         False	  7d7h
+openshift-apiserver                        4.14.31   True        False         False	  7m53s
+openshift-controller-manager               4.14.31   True        False         False	  7d7h
+openshift-samples                          4.14.31   True        False         False	  7d7h
+operator-lifecycle-manager                 4.14.31   True        False         False	  7d7h
+operator-lifecycle-manager-catalog         4.14.31   True        False         False	  7d7h
+operator-lifecycle-manager-packageserver   4.14.31   True        False         False	  3m29s
+service-ca                                 4.14.31   True        False         False	  7d7h
+storage                                    4.14.31   True        False         False	  7d7h
+
+```
+
+
+## Verify the migration
+
+```
+[root@test ~]# oc get network.config/cluster -o jsonpath='{.status.networkType}{"\n"}'
+OVNKubernetes
+
+
+
+[root@test ~]# oc get nodes
+NAME                                                STATUS   ROLES                  AGE    VERSION
+master-0.ovnmigration.lab.upshift.rdu2.redhat.com   Ready    control-plane,master   7d7h   v1.27.14+7852426
+master-1.ovnmigration.lab.upshift.rdu2.redhat.com   Ready    control-plane,master   7d7h   v1.27.14+7852426
+master-2.ovnmigration.lab.upshift.rdu2.redhat.com   Ready    control-plane,master   7d7h   v1.27.14+7852426
+worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   Ready    worker                 7d6h   v1.27.14+7852426
+worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   Ready    worker                 7d6h   v1.27.14+7852426
+```
+
+## Finish the migration
+
+```
+[root@test ~]# oc patch Network.operator.openshift.io cluster --type='merge' --patch '{ "spec": { "migration": null } }' 
+network.operator.openshift.io/cluster patched
+
+
+[root@test ~]# oc patch Network.operator.openshift.io cluster --type='merge' --patch '{ "spec": { "defaultNetwork": { "openshiftSDNConfig": null } } }' 
+network.operator.openshift.io/cluster patched (no change)
+
+
+[root@test ~]# oc delete namespace openshift-sdn
+namespace "openshift-sdn" deleted
+
+
+```
+
+# Verify the Network Policy post migration
+
+List the network policy and the pods from `projecta` and `projectb` as they may have new IPs
+
+```
+[root@test ~]# oc get networkpolicy -A
+NAMESPACE   NAME                    POD-SELECTOR   AGE
+projectb    deny-projecta-traffic   <none>         92m
+
+
+
+[root@test ~]# oc get pods -o wide -n projecta
+NAME                                                 READY   STATUS    RESTARTS   AGE   IP           NODE                                                NOMINATED NODE   READINESS GATES
+ovn-migration-network-policy-test-5d6d5d9fff-jqfww   1/1     Running   3          59m   10.131.0.6   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+
+
+
+[root@test ~]# oc get pods -o wide -n projectb
+NAME                                                 READY   STATUS    RESTARTS   AGE   IP            NODE                                                NOMINATED NODE   READINESS GATES
+ovn-migration-network-policy-test-55c4854885-28ffw   1/1     Running   3          59m   10.131.0.15   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+
+
+```
+
+## Ping test 
+
+```
+[root@test ~]# oc project projecta
+Now using project "projecta" on server "https://api.ovnmigration.lab.upshift.rdu2.redhat.com:6443".
+
+
+
+[root@test ~]# oc rsh ovn-migration-network-policy-test-5d6d5d9fff-jqfww
+sh-5.1$ ping 10.131.0.15
+PING 10.131.0.15 (10.131.0.15) 56(84) bytes of data.
+^C
+--- 10.131.0.15 ping statistics ---
+5 packets transmitted, 0 received, 100% packet loss, time 4121ms
+
+
+
+````
+Network Policies work well
+
+
+## Another ping test after removing Network Policy
+
+```
+[root@test ~]# oc delete networkpolicy deny-projecta-traffic  -n projectb
+networkpolicy.networking.k8s.io "deny-projecta-traffic" deleted
+
+
+
+
+[root@test ~]# oc rsh ovn-migration-network-policy-test-5d6d5d9fff-jqfww
+sh-5.1$ ping 10.131.0.15
+PING 10.131.0.15 (10.131.0.15) 56(84) bytes of data.
+64 bytes from 10.131.0.15: icmp_seq=1 ttl=64 time=0.991 ms
+64 bytes from 10.131.0.15: icmp_seq=2 ttl=64 time=0.638 ms
+64 bytes from 10.131.0.15: icmp_seq=3 ttl=64 time=0.080 ms
+^C
+--- 10.131.0.15 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2057ms
+rtt min/avg/max/mdev = 0.080/0.569/0.991/0.375 ms
+```
+
+
+So to conclude nothing substantial needs to be changed for migration atleast with network policies.
 
 
