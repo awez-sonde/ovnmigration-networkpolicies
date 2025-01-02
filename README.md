@@ -50,7 +50,7 @@ status:
 
 ```
 
-## Create two projects for facilitation network policies
+## Create two projects for the facilitation of network policies
 
 Two project `projecta` and `projectb` 
 
@@ -84,7 +84,7 @@ to build a new example application in Ruby. Or use kubectl to deploy a simple Ku
 
 
 
-## Create application in `projecta` and `projectb` to test the connectivity between them
+## Create an application in `projecta` and `projectb` to test the connectivity between them
 
 
 
@@ -155,7 +155,7 @@ spec:
 ```
 
 
-## Verify the pod IP's on projecta and projectb
+## Verify the pod IPs on `projecta` and `projectb`
 
 ```
 awezsonde@Awezs-Mac-Studio ~ % oc get pods -o wide -n projecta 
@@ -175,7 +175,7 @@ ovn-migration-network-policy-test-55c4854885-vc846   1/1     Running   0        
 
 
 
-## Ping from projecta pod to projectb
+## Ping from `projecta` pod to `projectb`
 
 ### Ping is successfull from 10.128.2.49 to 10.128.2.50
 
@@ -238,6 +238,6 @@ PING 10.128.2.50 (10.128.2.50) 56(84) bytes of data.
 ```
 
 
-
+# Start  OVN migration 
 
 
