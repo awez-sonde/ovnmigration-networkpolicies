@@ -280,13 +280,157 @@ status:
 ### Script to verify if the timeout for SDN is set to `0`
 
 ```
+awezsonde@Awezs-Mac-Studio ~ % cat timeout.sh 
+#!/bin/bash
 
+if [ -n "$OVN_SDN_MIGRATION_TIMEOUT" ] && [ "$OVN_SDN_MIGRATION_TIMEOUT" = "0s" ]; then
+    unset OVN_SDN_MIGRATION_TIMEOUT
+fi
+
+#loops the timeout command of the script to repeatedly check the cluster Operators until all are available.
+
+co_timeout=${OVN_SDN_MIGRATION_TIMEOUT:-1200s}
+timeout "$co_timeout" bash <<EOT
+until
+  oc wait co --all --for='condition=AVAILABLE=True' --timeout=10s && \
+  oc wait co --all --for='condition=PROGRESSING=False' --timeout=10s && \
+  oc wait co --all --for='condition=DEGRADED=False' --timeout=10s;
+do
+  sleep 10
+  echo "Some ClusterOperators Degraded=False,Progressing=True,or Available=False";
+done
+EOT
+
+
+
+awezsonde@Awezs-Mac-Studio ~ %  chmod +x ./timeout.sh
+
+
+awezsonde@Awezs-Mac-Studio ~ %  ./timeout.sh 
+clusteroperator.config.openshift.io/authentication condition met
+clusteroperator.config.openshift.io/baremetal condition met
+clusteroperator.config.openshift.io/cloud-controller-manager condition met
+clusteroperator.config.openshift.io/cloud-credential condition met
+clusteroperator.config.openshift.io/cluster-autoscaler condition met
+clusteroperator.config.openshift.io/config-operator condition met
+clusteroperator.config.openshift.io/console condition met
+clusteroperator.config.openshift.io/control-plane-machine-set condition met
+clusteroperator.config.openshift.io/csi-snapshot-controller condition met
+clusteroperator.config.openshift.io/dns condition met
+clusteroperator.config.openshift.io/etcd condition met
+clusteroperator.config.openshift.io/image-registry condition met
+clusteroperator.config.openshift.io/ingress condition met
+clusteroperator.config.openshift.io/insights condition met
+clusteroperator.config.openshift.io/kube-apiserver condition met
+clusteroperator.config.openshift.io/kube-controller-manager condition met
+clusteroperator.config.openshift.io/kube-scheduler condition met
+clusteroperator.config.openshift.io/kube-storage-version-migrator condition met
+clusteroperator.config.openshift.io/machine-api condition met
+clusteroperator.config.openshift.io/machine-approver condition met
+clusteroperator.config.openshift.io/machine-config condition met
+clusteroperator.config.openshift.io/marketplace condition met
+clusteroperator.config.openshift.io/monitoring condition met
+clusteroperator.config.openshift.io/network condition met
+clusteroperator.config.openshift.io/node-tuning condition met
+clusteroperator.config.openshift.io/openshift-apiserver condition met
+clusteroperator.config.openshift.io/openshift-controller-manager condition met
+clusteroperator.config.openshift.io/openshift-samples condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager-catalog condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager-packageserver condition met
+clusteroperator.config.openshift.io/service-ca condition met
+clusteroperator.config.openshift.io/storage condition met
+clusteroperator.config.openshift.io/authentication condition met
+clusteroperator.config.openshift.io/baremetal condition met
+clusteroperator.config.openshift.io/cloud-controller-manager condition met
+clusteroperator.config.openshift.io/cloud-credential condition met
+clusteroperator.config.openshift.io/cluster-autoscaler condition met
+clusteroperator.config.openshift.io/config-operator condition met
+clusteroperator.config.openshift.io/console condition met
+clusteroperator.config.openshift.io/control-plane-machine-set condition met
+clusteroperator.config.openshift.io/csi-snapshot-controller condition met
+clusteroperator.config.openshift.io/dns condition met
+clusteroperator.config.openshift.io/etcd condition met
+clusteroperator.config.openshift.io/image-registry condition met
+clusteroperator.config.openshift.io/ingress condition met
+clusteroperator.config.openshift.io/insights condition met
+clusteroperator.config.openshift.io/kube-apiserver condition met
+clusteroperator.config.openshift.io/kube-controller-manager condition met
+clusteroperator.config.openshift.io/kube-scheduler condition met
+clusteroperator.config.openshift.io/kube-storage-version-migrator condition met
+clusteroperator.config.openshift.io/machine-api condition met
+clusteroperator.config.openshift.io/machine-approver condition met
+clusteroperator.config.openshift.io/machine-config condition met
+clusteroperator.config.openshift.io/marketplace condition met
+clusteroperator.config.openshift.io/monitoring condition met
+clusteroperator.config.openshift.io/network condition met
+clusteroperator.config.openshift.io/node-tuning condition met
+clusteroperator.config.openshift.io/openshift-apiserver condition met
+clusteroperator.config.openshift.io/openshift-controller-manager condition met
+clusteroperator.config.openshift.io/openshift-samples condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager-catalog condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager-packageserver condition met
+clusteroperator.config.openshift.io/service-ca condition met
+clusteroperator.config.openshift.io/storage condition met
+clusteroperator.config.openshift.io/authentication condition met
+clusteroperator.config.openshift.io/baremetal condition met
+clusteroperator.config.openshift.io/cloud-controller-manager condition met
+clusteroperator.config.openshift.io/cloud-credential condition met
+clusteroperator.config.openshift.io/cluster-autoscaler condition met
+clusteroperator.config.openshift.io/config-operator condition met
+clusteroperator.config.openshift.io/console condition met
+clusteroperator.config.openshift.io/control-plane-machine-set condition met
+clusteroperator.config.openshift.io/csi-snapshot-controller condition met
+clusteroperator.config.openshift.io/dns condition met
+clusteroperator.config.openshift.io/etcd condition met
+clusteroperator.config.openshift.io/image-registry condition met
+clusteroperator.config.openshift.io/ingress condition met
+clusteroperator.config.openshift.io/insights condition met
+clusteroperator.config.openshift.io/kube-apiserver condition met
+clusteroperator.config.openshift.io/kube-controller-manager condition met
+clusteroperator.config.openshift.io/kube-scheduler condition met
+clusteroperator.config.openshift.io/kube-storage-version-migrator condition met
+clusteroperator.config.openshift.io/machine-api condition met
+clusteroperator.config.openshift.io/machine-approver condition met
+clusteroperator.config.openshift.io/machine-config condition met
+clusteroperator.config.openshift.io/marketplace condition met
+clusteroperator.config.openshift.io/monitoring condition met
+clusteroperator.config.openshift.io/network condition met
+clusteroperator.config.openshift.io/node-tuning condition met
+clusteroperator.config.openshift.io/openshift-apiserver condition met
+clusteroperator.config.openshift.io/openshift-controller-manager condition met
+clusteroperator.config.openshift.io/openshift-samples condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager-catalog condition met
+clusteroperator.config.openshift.io/operator-lifecycle-manager-packageserver condition met
+clusteroperator.config.openshift.io/service-ca condition met
+clusteroperator.config.openshift.io/storage condition met
 ```
 
 Delete any NNCP and make sure the `migration` field is set to `none`.
 
 
+```
+awezsonde@Awezs-Mac-Studio ~ % oc patch Network.operator.openshift.io cluster --type='merge' --patch '{"spec":{"migration":null}}' 
+network.operator.openshift.io/cluster patched (no change)
+```
+
+### Start the migration
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc patch Network.operator.openshift.io cluster --type='merge' --patch '{ "spec": { "migration": { "networkType": "OVNKubernetes" } } }' 
+network.operator.openshift.io/cluster patched
 
 ```
 
+### Verify the migration process
+
 ```
+awezsonde@Awezs-Mac-Studio ~ % oc get mcp   
+NAME     CONFIG                                             UPDATED   UPDATING   DEGRADED   MACHINECOUNT   READYMACHINECOUNT   UPDATEDMACHINECOUNT   DEGRADEDMACHINECOUNT   AGE
+master   rendered-master-111e65b19e5e673d02a596329266a022   False     True       False      3              0                   0                     0                      7d6h
+worker   rendered-worker-ca4c7dc88351e223445c226a15ea52de   False     True       False      2              0                   0                     0                      7d6h
+
+```
+
