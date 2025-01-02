@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ovn-migration-network-policy-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projectb-app
+  template:
+    metadata:
+      labels:
+        app: projectb-app
+    spec:
+      containers:
+      - name: applicationb
+        image: registry.redhat.io/openshift4/network-tools-rhel9@sha256:5329a0b15459029b955c0347e45ff0e01d3433623f33121575dcf4ece0552bca
+        command: ["/bin/sh", "-ec", "sleep 1000"]
