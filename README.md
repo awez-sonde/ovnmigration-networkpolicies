@@ -89,139 +89,153 @@ to build a new example application in Ruby. Or use kubectl to deploy a simple Ku
 
 
 ```
-awezsonde@Awezs-Mac-Studio ~ % oc new-app rails-postgresql-example -n projecta --name rails-postgresql-projecta
---> Deploying template "projecta/rails-postgresql-example" to project projecta
-
-     Rails + PostgreSQL (Ephemeral)
-     ---------
-     An example Rails application with a PostgreSQL database. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/rails-ex/blob/master/README.md.
-     
-     WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing.
-
-     The following service(s) have been created in your project: rails-postgresql-example, postgresql.
-     
-     For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/rails-ex/blob/master/README.md.
-
-     * With parameters:
-        * Name=rails-postgresql-example
-        * Namespace=openshift
-        * Memory Limit=512Mi
-        * Memory Limit (PostgreSQL)=512Mi
-        * Git Repository URL=https://github.com/sclorg/rails-ex.git
-        * Git Reference=
-        * Context Directory=
-        * Application Hostname=
-        * GitHub Webhook Secret=0RXOErDCKTQPKw7fEpSECQ0gTKKin0jsLUqWSIaO # generated
-        * Secret Key=2rci16ldj3g22ullvym0pc7csurjt5u2ghv3www0q3ido2rsfop4pfafh0152ug18wk0l426h2mbgn786clq32pvvfpecw3xp0nbchvp8b3lvslpbh1djj5ej332icd # generated
-        * Application Username=openshift
-        * Application Password=secret
-        * Rails Environment=production
-        * Database Service Name=postgresql
-        * Database Username=userXCY # generated
-        * Database Password=wnb1Emrd # generated
-        * Database Name=root
-        * Maximum Database Connections=100
-        * Shared Buffer Amount=12MB
-        * Custom RubyGems Mirror URL=
-
---> Creating resources ...
-    secret "rails-postgresql-example" created
-    service "rails-postgresql-example" created
-    route.route.openshift.io "rails-postgresql-example" created
-    imagestream.image.openshift.io "rails-postgresql-example" created
-    buildconfig.build.openshift.io "rails-postgresql-example" created
-Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
-    deploymentconfig.apps.openshift.io "rails-postgresql-example" created
-    service "postgresql" created
-    deploymentconfig.apps.openshift.io "postgresql" created
---> Success
-    Access your application via route 'rails-postgresql-example-projecta.apps.ovnmigration.lab.upshift.rdu2.redhat.com' 
-    Build scheduled, use 'oc logs -f buildconfig/rails-postgresql-example' to track its progress.
-    Run 'oc status' to view your app.
+awezsonde@Awezs-Mac-Studio ~ % oc create -f applicationa.yaml -n projecta
+deployment.apps/ovn-migration-network-policy-test created
 ```
 
 
 
 ```
-awezsonde@Awezs-Mac-Studio ~ % oc new-app rails-postgresql-example -n projectb --name rails-postgresql-projectb
---> Deploying template "projectb/rails-postgresql-example" to project projectb
-
-     Rails + PostgreSQL (Ephemeral)
-     ---------
-     An example Rails application with a PostgreSQL database. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/rails-ex/blob/master/README.md.
-     
-     WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing.
-
-     The following service(s) have been created in your project: rails-postgresql-example, postgresql.
-     
-     For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/rails-ex/blob/master/README.md.
-
-     * With parameters:
-        * Name=rails-postgresql-example
-        * Namespace=openshift
-        * Memory Limit=512Mi
-        * Memory Limit (PostgreSQL)=512Mi
-        * Git Repository URL=https://github.com/sclorg/rails-ex.git
-        * Git Reference=
-        * Context Directory=
-        * Application Hostname=
-        * GitHub Webhook Secret=X728NM5RVSVK56PViexP0nKayMQmWJ8iBTNDrC8U # generated
-        * Secret Key=n8vyqutsi74wp76olkmsrtvumuwqfpuse66wkstlx0hf4oonhtyqhrycwlch7tp7wia5u1fakwt3jxyg87ykrd7fd8v7tm8afnogcv0opi5cknvhk3eh0yf01qvg7rb # generated
-        * Application Username=openshift
-        * Application Password=secret
-        * Rails Environment=production
-        * Database Service Name=postgresql
-        * Database Username=userQRF # generated
-        * Database Password=hcoFeG2u # generated
-        * Database Name=root
-        * Maximum Database Connections=100
-        * Shared Buffer Amount=12MB
-        * Custom RubyGems Mirror URL=
-
---> Creating resources ...
-    secret "rails-postgresql-example" created
-    service "rails-postgresql-example" created
-    route.route.openshift.io "rails-postgresql-example" created
-    imagestream.image.openshift.io "rails-postgresql-example" created
-    buildconfig.build.openshift.io "rails-postgresql-example" created
-Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
-    deploymentconfig.apps.openshift.io "rails-postgresql-example" created
-    service "postgresql" created
-    deploymentconfig.apps.openshift.io "postgresql" created
---> Success
-    Access your application via route 'rails-postgresql-example-projectb.apps.ovnmigration.lab.upshift.rdu2.redhat.com' 
-    Build scheduled, use 'oc logs -f buildconfig/rails-postgresql-example' to track its progress.
-    Run 'oc status' to view your app.
+awezsonde@Awezs-Mac-Studio ~ % oc create -f applicationb.yaml -n projectb
+deployment.apps/ovn-migration-network-policy-test created
 ```
 
 
+## Content of the deployment file 
+
 ```
-awezsonde@Awezs-Mac-Studio ~ % oc get pods -n projecta -o wide
-NAME                                  READY   STATUS      RESTARTS   AGE   IP             NODE                                                NOMINATED NODE   READINESS GATES
-postgresql-1-2frjh                    1/1     Running     0          21m   10.131.0.205   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-postgresql-1-deploy                   0/1     Completed   0          21m   10.131.0.204   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-build      0/1     Completed   0          21m   10.128.2.34    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-deploy     0/1     Completed   0          18m   10.128.2.37    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-hook-pre   0/1     Completed   0          18m   10.128.2.38    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-kz2rj      1/1     Running     0          18m   10.128.2.39    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+awezsonde@Awezs-Mac-Studio ~ % cat applicationa.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ovn-migration-network-policy-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projecta-app
+  template:
+    metadata:
+      labels:
+        app: projecta-app
+    spec:
+      containers:
+      - name: applicationa
+        image: registry.redhat.io/openshift4/network-tools-rhel9@sha256:5329a0b15459029b955c0347e45ff0e01d3433623f33121575dcf4ece0552bca
+        command: ["/bin/sh", "-ec", "sleep 1000"]
 
 
 
 
 
-awezsonde@Awezs-Mac-Studio ~ % oc get pods -n projectb -o wide
-NAME                                  READY   STATUS      RESTARTS   AGE   IP             NODE                                                NOMINATED NODE   READINESS GATES
-postgresql-1-deploy                   0/1     Completed   0          21m   10.128.2.36    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-postgresql-1-plpjv                    1/1     Running     0          21m   10.131.0.206   worker-0.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-build      0/1     Completed   0          21m   10.128.2.35    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-deploy     0/1     Completed   0          17m   10.128.2.40    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-hook-pre   0/1     Completed   0          17m   10.128.2.41    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
-rails-postgresql-example-1-srdg2      1/1     Running     0          17m   10.128.2.42    worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+
+
+
+
+awezsonde@Awezs-Mac-Studio ~ % cat applicationb.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ovn-migration-network-policy-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: projectb-app
+  template:
+    metadata:
+      labels:
+        app: projectb-app
+    spec:
+      containers:
+      - name: applicationb
+        image: registry.redhat.io/openshift4/network-tools-rhel9@sha256:5329a0b15459029b955c0347e45ff0e01d3433623f33121575dcf4ece0552bca
+        command: ["/bin/sh", "-ec", "sleep 1000"]
 
 ```
 
 
-## Ping pods from `projecta` to `projectb`
+## Verify the pod IP's on projecta and projectb
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc get pods -o wide -n projecta 
+NAME                                                 READY   STATUS    RESTARTS   AGE     IP            NODE                                                NOMINATED NODE   READINESS GATES
+ovn-migration-network-policy-test-5d6d5d9fff-8xbxd   1/1     Running   0          4m33s   10.128.2.49   worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+
+
+
+
+
+
+awezsonde@Awezs-Mac-Studio ~ % oc get pods -o wide -n projectb 
+NAME                                                 READY   STATUS    RESTARTS   AGE    IP            NODE                                                NOMINATED NODE   READINESS GATES
+ovn-migration-network-policy-test-55c4854885-vc846   1/1     Running   0          109s   10.128.2.50   worker-1.ovnmigration.lab.upshift.rdu2.redhat.com   <none>           <none>
+
+```
+
+
+
+## Ping from projecta pod to projectb
+
+### Ping is successfull from 10.128.2.49 to 10.128.2.50
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc rsh ovn-migration-network-policy-test-5d6d5d9fff-8xbxd         
+sh-5.1$ 
+sh-5.1$ ping 10.128.2.50
+PING 10.128.2.50 (10.128.2.50) 56(84) bytes of data.
+64 bytes from 10.128.2.50: icmp_seq=1 ttl=64 time=0.434 ms
+64 bytes from 10.128.2.50: icmp_seq=2 ttl=64 time=0.065 ms
+64 bytes from 10.128.2.50: icmp_seq=3 ttl=64 time=0.048 ms
+64 bytes from 10.128.2.50: icmp_seq=4 ttl=64 time=0.081 ms
+64 bytes from 10.128.2.50: icmp_seq=5 ttl=64 time=0.053 ms
+^C
+--- 10.128.2.50 ping statistics ---
+5 packets transmitted, 5 received, 0% packet loss, time 4118ms
+rtt min/avg/max/mdev = 0.048/0.136/0.434/0.149 ms
+
+```
+
+## Introduce network policy
+
+### The network policy will be applied on `projectb` and prevent traffic from `projecta` 
+
+```
+awezsonde@Awezs-Mac-Studio ~ % cat networkpolicy-projectb.yaml 
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-projecta-traffic
+  namespace: projectb
+spec:
+  podSelector: {} # Apply to all pods in ProjectB
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: projecta # Only allow traffic from namespaces other than ProjectA
+
+
+
+
+awezsonde@Awezs-Mac-Studio ~ % oc create -f networkpolicy-projectb.yaml -n projectb
+networkpolicy.networking.k8s.io/deny-projecta-traffic created
+```
+
+## Ping test again from projecta to projectb
+
+### Ping not successful , suggests network policy is in place
+
+```
+awezsonde@Awezs-Mac-Studio ~ % oc rsh ovn-migration-network-policy-test-5d6d5d9fff-8xbxd 
+sh-5.1$ ping 10.128.2.50
+PING 10.128.2.50 (10.128.2.50) 56(84) bytes of data.
+
+
+^C
+--- 10.128.2.50 ping statistics ---
+20 packets transmitted, 0 received, 100% packet loss, time 19477ms
+```
 
 
 
